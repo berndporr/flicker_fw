@@ -1,9 +1,8 @@
-# attys_fw
-
-This is the firmware for the Attys.
+# flicker_fw
 
 ## Requirements
 
+  - Ubuntu Jammy (in a VM possibly)
   - MSP430 Launchpad
   - Linux system
   - mspdebug
