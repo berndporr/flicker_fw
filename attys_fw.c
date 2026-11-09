@@ -1228,12 +1228,6 @@ static inline void initMSP430()
 	P2DIR |= 0x80;
 	P2OUT |= 0x80;
 
-	// power sense, P2.6
-	// enable pull/up/down
-	P2REN |= 0x40;
-	// set to pulldown
-	P2OUT &= ~0x40;
-
 	// UART
 	P1SEL = BIT1 + BIT2 ;                     // P1.1 = RXD, P1.2=TXD
 	P1SEL2 = BIT1 + BIT2;                      
@@ -1286,6 +1280,19 @@ static inline void initMSP430()
 	P2OUT &= ~BIT4;                           // Now with SPI signals initialized,
 	P2OUT |= BIT4;                            // reset slave
 
+	P2DIR |= BIT6;                // Set P2.6 as output
+	P2SEL |= BIT6;                // Set P2SEL.6 to 1
+	P2SEL &= ~BIT7;               // Clear P2SEL.7 (Required to switch off crystal mode)
+	P2SEL2 &= ~BIT6;              // Ensure P2SEL2.6 is 0 for primary peripheral function
+	P2SEL2 &= ~BIT7;              // Ensure P2SEL2.7 is 0 for primary peripheral function
+
+	// --- Timer0_A Configuration ---
+	TA0CCR0 = 65536 - 1;           // Set PWM Period (e.g., 1000 clock cycles)
+	TA0CCR1 = 32768;                // Set Duty Cycle (e.g., 50% of the period)
+	TA0CCTL1 = OUTMOD_7;          // Reset/Set output mode for hardware PWM
+	
+	// Start Timer0_A using SMCLK, Up mode, /8 clock divider
+	TA0CTL = TASSEL_2 + MC_1 + ID_3;     
 }
 
 void enableInterrupts()
